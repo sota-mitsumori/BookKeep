@@ -1,61 +1,28 @@
-//
-//  ContentView.swift
-//  BookKeep
-//
-//  Created by Sota Mitsumori on 2026/01/06.
-//
-
 import SwiftUI
-import SwiftData
 
+/// Step5: TabView で「本棚 / スキャン / 分析」を構成するエントリーポイント。
 struct ContentView: View {
-    @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
-
     var body: some View {
-        NavigationSplitView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
+        TabView {
+            BookListView()
+                .tabItem {
+                    Label("本棚", systemImage: "books.vertical")
                 }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-        } detail: {
-            Text("Select an item")
-        }
-    }
 
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
+            ScanView()
+                .tabItem {
+                    Label("スキャン", systemImage: "barcode.viewfinder")
+                }
 
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-            }
+            AnalyticsView()
+                .tabItem {
+                    Label("分析", systemImage: "chart.pie")
+                }
         }
     }
 }
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
 }
+

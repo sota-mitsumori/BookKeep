@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Book Keep - 読書習慣を可視化するiOSアプリ。バーコードスキャンで簡単に読書記録を管理。">
+    <title>Book Keep - 読書習慣を可視化するアプリ</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo">
+                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 19.5C4 18.837 4.263 18.201 4.732 17.732C5.201 17.263 5.837 17 6.5 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M6.5 2H20V22H6.5C5.837 22 5.201 21.737 4.732 21.268C4.263 20.799 4 20.163 4 19.5V4.5C4 3.837 4.263 3.201 4.732 2.732C5.201 2.263 5.837 2 6.5 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <h1>Book Keep</h1>
+            </div>
+            <nav>
+                <a href="#features">機能</a>
+                <a href="#privacy">プライバシー</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content">
+                    <h2>読書習慣を可視化する</h2>
+                    <p class="subtitle">バーコードスキャンで簡単に読書記録を管理・分析</p>
+                    <div class="app-badge">
+                        <!-- <a href="https://apps.apple.com/app/xxx" class="app-store-badge">
+                            <img src="app-store-badge.svg" alt="App Storeからダウンロード" onerror="this.style.display='none'">
+                            <span>App Storeで入手</span>
+                        </a> -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features">
+            <div class="container">
+                <h2>主な機能</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">📷</div>
+                        <h3>バーコードスキャン</h3>
+                        <p>ISBNバーコードをスキャンするだけで、書籍情報を自動取得。手入力の手間を省きます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📚</div>
+                        <h3>読書記録管理</h3>
+                        <p>読み始め日、読み終わり日、感想、カテゴリを記録。積読・読書中・読了のステータス管理も可能。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📊</div>
+                        <h3>読書分析</h3>
+                        <p>月間読了冊数やページ数の推移をグラフで可視化。読書習慣を客観的に把握できます。</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🖼️</div>
+                        <h3>表紙画像</h3>
+                        <p>書籍の表紙画像を自動取得し、本棚を視覚的に楽しめます。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="privacy" class="privacy">
+            <div class="container">
+                <h2>プライバシーポリシー</h2>
+                <div class="privacy-content">
+                    <p><strong>最終更新日: 2026年1月6日</strong></p>
+                    
+                    <h3>1. 情報の収集について</h3>
+                    <p>Book Keepは、ユーザーの個人情報を一切収集しません。本アプリは完全にローカルで動作し、以下の情報のみをデバイス内に保存します：</p>
+                    <ul>
+                        <li>スキャンした書籍の情報（タイトル、著者、ISBN、表紙画像URLなど）</li>
+                        <li>読書記録（開始日、終了日、感想、カテゴリ、ステータスなど）</li>
+                    </ul>
+                    <p>これらの情報は、ユーザーのデバイス内のみに保存され、外部のサーバーに送信されることはありません。</p>
+
+                    <h3>2. 外部APIの利用について</h3>
+                    <p>書籍情報の取得のために、以下の公開APIを使用します：</p>
+                    <ul>
+                        <li><strong>Google Books API</strong>: 書籍情報（タイトル、著者、表紙画像、概要など）の取得</li>
+                        <li><strong>openBD API</strong>: Google Books APIで取得できない場合のフォールバック</li>
+                    </ul>
+                    <p>これらのAPIへのリクエストには、スキャンしたISBNのみが送信されます。ユーザーの個人情報は一切送信されません。</p>
+
+                    <h3>3. データの保存について</h3>
+                    <p>すべてのデータは、ユーザーのデバイス内のSwiftDataデータベースに保存されます。データはクラウドに同期されず、他のデバイスやサービスと共有されることはありません。</p>
+
+                    <h3>4. 画像キャッシュについて</h3>
+                    <p>表紙画像は、パフォーマンス向上のため、デバイスのキャッシュディレクトリに保存されます。これらの画像は、アプリを削除すると同時に削除されます。</p>
+
+                    <h3>5. 広告・トラッキングについて</h3>
+                    <p>Book Keepには、広告やトラッキング機能は一切含まれていません。</p>
+
+                    <h3>6. お問い合わせ</h3>
+                    <p>プライバシーポリシーに関するご質問やご意見がございましたら、お気軽にお問い合わせください。</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Book Keep. All rights reserved.</p>
+            <p class="attribution">
+                <a href="https://www.flaticon.com/free-icons/book" title="book icons">Book icons created by mikan933 - Flaticon</a>
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
+

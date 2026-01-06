@@ -1,10 +1,3 @@
-//
-//  BookKeepApp.swift
-//  BookKeep
-//
-//  Created by Sota Mitsumori on 2026/01/06.
-//
-
 import SwiftUI
 import SwiftData
 
@@ -12,7 +5,7 @@ import SwiftData
 struct BookKeepApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            Book.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

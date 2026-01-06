@@ -1,10 +1,3 @@
-//
-//  Item.swift
-//  BookKeep
-//
-//  Created by Sota Mitsumori on 2026/01/06.
-//
-
 import Foundation
 import SwiftData
 
