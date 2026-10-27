@@ -86,11 +86,11 @@
 				};
 			};
 			buildConfigurationList = BE5838892F0CF689000E2900 /* Build configuration list for PBXProject "BookKeep" */;
-			developmentRegion = en;
+			developmentRegion = ja;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				en,
 				Base,
+				ja,
 			);
 			mainGroup = BE5838852F0CF689000E2900;
 			minimizedProjectReferenceProxies = 1;
