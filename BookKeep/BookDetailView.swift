@@ -7,6 +7,7 @@ struct BookDetailView: View {
     @State private var pageCountText: String = ""
     @State private var hasStartDate: Bool = false
     @State private var hasEndDate: Bool = false
+    @FocusState private var isPageCountFocused: Bool
 
     var body: some View {
         Form {
@@ -31,6 +32,7 @@ struct BookDetailView: View {
                     .foregroundStyle(.secondary)
                 TextField("ページ数", text: $pageCountText)
                     .keyboardType(.numberPad)
+                    .focused($isPageCountFocused)
                     .onChange(of: pageCountText) { _, newValue in
                         book.pageCount = Int(newValue)
                     }
@@ -90,6 +92,16 @@ struct BookDetailView: View {
 
         }
         .navigationTitle("本の編集")
+        .toolbar {
+            if isPageCountFocused {
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("完了") {
+                        isPageCountFocused = false
+                    }
+                }
+            }
+        }
         .onAppear {
             if pageCountText.isEmpty, let pageCount = book.pageCount {
                 pageCountText = String(pageCount)
