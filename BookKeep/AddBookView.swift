@@ -15,6 +15,7 @@ struct AddBookView: View {
     @State private var hasEndDate: Bool = false
     @State private var review: String = ""
     @State private var pageCountText: String
+    @FocusState private var isPageCountFocused: Bool
 
     init(info: FetchedBookInfo, onSave: @escaping (Book) -> Void) {
         self.info = info
@@ -67,6 +68,7 @@ struct AddBookView: View {
 
                     TextField("ページ数 (任意)", text: $pageCountText)
                         .keyboardType(.numberPad)
+                        .focused($isPageCountFocused)
 
                     Toggle("読み始め日を設定", isOn: dateSettingBinding(isOn: $hasStartDate, date: $startDate))
 
@@ -111,6 +113,14 @@ struct AddBookView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("保存") {
                         saveBook()
+                    }
+                }
+                if isPageCountFocused {
+                    ToolbarItemGroup(placement: .keyboard) {
+                        Spacer()
+                        Button("完了") {
+                            isPageCountFocused = false
+                        }
                     }
                 }
             }
