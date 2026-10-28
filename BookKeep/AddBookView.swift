@@ -11,6 +11,8 @@ struct AddBookView: View {
     @State private var status: String = "積読"
     @State private var startDate: Date?
     @State private var endDate: Date?
+    @State private var hasStartDate: Bool = false
+    @State private var hasEndDate: Bool = false
     @State private var review: String = ""
     @State private var pageCountText: String
 
@@ -66,25 +68,32 @@ struct AddBookView: View {
                     TextField("ページ数 (任意)", text: $pageCountText)
                         .keyboardType(.numberPad)
 
-                    DatePicker(
-                        "読み始め日",
-                        selection: Binding(
-                            get: { startDate ?? Date() },
-                            set: { startDate = $0 }
-                        ),
-                        displayedComponents: .date
-                    )
-                    .environment(\.locale, Locale(identifier: "ja_JP"))
+                    Toggle("読み始め日を設定", isOn: dateSettingBinding(isOn: $hasStartDate, date: $startDate))
 
-                    DatePicker(
-                        "読み終わり日",
-                        selection: Binding(
-                            get: { endDate ?? Date() },
-                            set: { endDate = $0 }
-                        ),
-                        displayedComponents: .date
-                    )
-                    .environment(\.locale, Locale(identifier: "ja_JP"))
+                    if hasStartDate {
+                        DatePicker(
+                            "読み始め日",
+                            selection: nonOptionalDate($startDate),
+                            displayedComponents: .date
+                        )
+                        .environment(\.locale, Locale(identifier: "ja_JP"))
+                    }
+
+                    Toggle("読み終わり日を設定", isOn: dateSettingBinding(isOn: $hasEndDate, date: $endDate))
+
+                    if hasEndDate {
+                        DatePicker(
+                            "読み終わり日",
+                            selection: nonOptionalDate($endDate),
+                            displayedComponents: .date
+                        )
+                        .environment(\.locale, Locale(identifier: "ja_JP"))
+
+                        Button("今日を読み終わり日にする") {
+                            endDate = Date()
+                        }
+                        .foregroundColor(.secondary)
+                    }
                 }
 
                 Section("メモ") {
@@ -116,8 +125,8 @@ struct AddBookView: View {
             category: category.isEmpty ? "未分類" : category
         )
         book.status = status
-        book.startDate = startDate
-        book.endDate = endDate
+        book.startDate = hasStartDate ? (startDate ?? Date()) : nil
+        book.endDate = hasEndDate ? (endDate ?? Date()) : nil
         book.review = review
         if let pages = Int(pageCountText) {
             book.pageCount = pages
@@ -129,6 +138,32 @@ struct AddBookView: View {
 
         onSave(book)
         dismiss()
+    }
+
+    /// オンにした瞬間に今日を入れ、オフにした瞬間に下書きの日付を消す。
+    private func dateSettingBinding(isOn: Binding<Bool>, date: Binding<Date?>) -> Binding<Bool> {
+        Binding(
+            get: { isOn.wrappedValue },
+            set: { isEnabled in
+                withAnimation {
+                    isOn.wrappedValue = isEnabled
+                }
+                if isEnabled {
+                    if date.wrappedValue == nil {
+                        date.wrappedValue = Date()
+                    }
+                } else {
+                    date.wrappedValue = nil
+                }
+            }
+        )
+    }
+
+    private func nonOptionalDate(_ date: Binding<Date?>) -> Binding<Date> {
+        Binding(
+            get: { date.wrappedValue ?? Date() },
+            set: { date.wrappedValue = $0 }
+        )
     }
 
     // MARK: - Cover Image

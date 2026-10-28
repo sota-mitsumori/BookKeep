@@ -2,14 +2,11 @@ import SwiftUI
 import SwiftData
 
 struct BookDetailView: View {
-    @Environment(\.dismiss) private var dismiss
-    @Environment(\.modelContext) private var modelContext
-
     @Bindable var book: Book
 
-    @State private var isSaving = false
-    @State private var saveError: String?
     @State private var pageCountText: String = ""
+    @State private var hasStartDate: Bool = false
+    @State private var hasEndDate: Bool = false
 
     var body: some View {
         Form {
@@ -34,6 +31,9 @@ struct BookDetailView: View {
                     .foregroundStyle(.secondary)
                 TextField("ページ数", text: $pageCountText)
                     .keyboardType(.numberPad)
+                    .onChange(of: pageCountText) { _, newValue in
+                        book.pageCount = Int(newValue)
+                    }
             }
 
             Section("読書情報") {
@@ -45,35 +45,32 @@ struct BookDetailView: View {
 
                 TextField("カテゴリ", text: $book.category)
 
-                DatePicker(
-                    "読み始め日",
-                    selection: Binding(
-                        get: { book.startDate ?? Date() },
-                        set: { book.startDate = $0 }
-                    ),
-                    displayedComponents: .date
-                )
-                .environment(\.locale, Locale(identifier: "ja_JP"))
+                Toggle("読み始め日を設定", isOn: dateSettingBinding(isOn: $hasStartDate, date: $book.startDate))
 
-                Button("読み始め日をクリア") {
-                    book.startDate = nil
+                if hasStartDate {
+                    DatePicker(
+                        "読み始め日",
+                        selection: nonOptionalDate($book.startDate),
+                        displayedComponents: .date
+                    )
+                    .environment(\.locale, Locale(identifier: "ja_JP"))
                 }
-                .foregroundColor(.secondary)
 
-                DatePicker(
-                    "読み終わり日",
-                    selection: Binding(
-                        get: { book.endDate ?? Date() },
-                        set: { book.endDate = $0 }
-                    ),
-                    displayedComponents: .date
-                )
-                .environment(\.locale, Locale(identifier: "ja_JP"))
+                Toggle("読み終わり日を設定", isOn: dateSettingBinding(isOn: $hasEndDate, date: $book.endDate))
 
-                Button("読み終わり日をクリア") {
-                    book.endDate = nil
+                if hasEndDate {
+                    DatePicker(
+                        "読み終わり日",
+                        selection: nonOptionalDate($book.endDate),
+                        displayedComponents: .date
+                    )
+                    .environment(\.locale, Locale(identifier: "ja_JP"))
+
+                    Button("今日を読み終わり日にする") {
+                        book.endDate = Date()
+                    }
+                    .foregroundColor(.secondary)
                 }
-                .foregroundColor(.secondary)
             }
 
             Section("概要") {
@@ -91,58 +88,41 @@ struct BookDetailView: View {
                     .frame(minHeight: 140)
             }
 
-            if let saveError {
-                Section {
-                    Text(saveError)
-                        .font(.footnote)
-                        .foregroundStyle(.red)
-                }
-            }
         }
         .navigationTitle("本の編集")
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button {
-                    saveChanges()
-                } label: {
-                    if isSaving {
-                        ProgressView()
-                    } else {
-                        Text("保存")
-                    }
-                }
-                .disabled(isSaving)
-            }
-        }
         .onAppear {
-            if let pageCount = book.pageCount {
+            if pageCountText.isEmpty, let pageCount = book.pageCount {
                 pageCountText = String(pageCount)
             }
+            hasStartDate = book.startDate != nil
+            hasEndDate = book.endDate != nil
         }
     }
 
-    private func saveChanges() {
-        isSaving = true
-        saveError = nil
-        if let pages = Int(pageCountText) {
-            book.pageCount = pages
-        } else {
-            book.pageCount = nil
-        }
-        Task {
-            do {
-                try modelContext.save()
-                await MainActor.run {
-                    isSaving = false
-                    dismiss()
+    /// オンにした瞬間に今日を入れ、オフにした瞬間に日付を消す。変更はすぐ本に反映される。
+    private func dateSettingBinding(isOn: Binding<Bool>, date: Binding<Date?>) -> Binding<Bool> {
+        Binding(
+            get: { isOn.wrappedValue },
+            set: { isEnabled in
+                withAnimation {
+                    isOn.wrappedValue = isEnabled
                 }
-            } catch {
-                await MainActor.run {
-                    isSaving = false
-                    saveError = "保存に失敗しました: \(error.localizedDescription)"
+                if isEnabled {
+                    if date.wrappedValue == nil {
+                        date.wrappedValue = Date()
+                    }
+                } else {
+                    date.wrappedValue = nil
                 }
             }
-        }
+        )
+    }
+
+    private func nonOptionalDate(_ date: Binding<Date?>) -> Binding<Date> {
+        Binding(
+            get: { date.wrappedValue ?? Date() },
+            set: { date.wrappedValue = $0 }
+        )
     }
 
     // MARK: - Cover Image
